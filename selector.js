@@ -1,4 +1,4 @@
-var a = function runPNG(){
+var a = function(){
 	if( $("#png").length <= 0 ){
 		var versionCol = 0;
 		$(".dataTables_scrollHead table thead tr th").each(function(index, el) {
