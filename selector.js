@@ -1,45 +1,45 @@
+function runPNG(){
+	if( $("#png").length <= 0 ){
+		var versionCol = 0;
+		$(".dataTables_scrollHead table thead tr th").each(function(index, el) {
+			if($(el).text().toLowerCase() == 'version'){
+				versionCol = index;
+				return;
+			}
+		});
 
-if( $("#png").length <= 0 ){
-	var versionCol = 0;
-	$(".dataTables_scrollHead table thead tr th").each(function(index, el) {
-		if($(el).text().toLowerCase() == 'version'){
-			versionCol = index;
-			return;
+		var versionArr = Array();
+
+		$("#filter-results-table tbody tr td:nth-child("+(versionCol+1)+")").each(function(index, el) {
+			var v = $(el).text();
+
+			if(versionArr.indexOf(v) == -1){
+				versionArr.push(v);
+			}	
+		});
+		versionArr.sort().reverse();
+
+		$("body").append('<style type="text/css">#png{font-family: arial,sans-serif;position: fixed;width: 100%;height: 100vh;z-index: 9999999;left: 0;top: 0;display: none;}#png-wr{display: flex;width: 100%;height: 100vh;background: rgba(0, 0, 0, 0.6);}#png-ma{width: 90%;max-width: 500px;background: #fff;margin: auto;border: 4px;padding: 30px 20px;}#png-ti{font-weight: bold;margin: 0 0 20px;}#png-se{width: 100%;outline: 0px;border: 1px solid #ccc;padding: 5px 10px;margin-bottom: 10px;border-radius: 4px;}#png-cl,#png-ru{padding: 5px 20px;min-width: 80px;border: 1px solid #c6c6c6;margin-right: 10px;}#pngResult th, #pngResult td{border: solid 1px black;padding: 2px 5px;margin:0;width: 200px;}#pngResult tr.ti [colspan="2"]{background-color:#4A86E8; margin:0; color:#fff;}#pngResult tr.ti [colspan="4"]{background-color:#4A86E8; margin:0;}#pngResult tr.co th{background-color:#C9DAF8;}#pngResult table{margin-top: 10px; text-align:center;border-collapse: collapse;}</style><div id="png"><div id="png-wr"><div id="png-ma"><p id="png-ti">Đổi tiêu đề ở đây</p><select id="png-se"></select><button id="png-cl">Close</button><button id="png-ru">Run</button></div></div></div>');
+
+		for (var i = 0; i < versionArr.length; i++) {
+			$("#png-se").append('<option>'+versionArr[i]+'</option>');
 		}
-	});
 
-	var versionArr = Array();
+		$("#png").fadeIn();
 
-	$("#filter-results-table tbody tr td:nth-child("+(versionCol+1)+")").each(function(index, el) {
-		var v = $(el).text();
+		$("#png-cl").click(function(){
+			$("#png").fadeOut();
+		});
 
-		if(versionArr.indexOf(v) == -1){
-			versionArr.push(v);
-		}	
-	});
-	versionArr.sort().reverse();
+		$("#png-ru").click(function(){
+			hdProcessBugBase($("#png-se").val());
+			$("#png").fadeOut();
+		});
 
-	$("body").append('<style type="text/css">#png{font-family: arial,sans-serif;position: fixed;width: 100%;height: 100vh;z-index: 9999999;left: 0;top: 0;display: none;}#png-wr{display: flex;width: 100%;height: 100vh;background: rgba(0, 0, 0, 0.6);}#png-ma{width: 90%;max-width: 500px;background: #fff;margin: auto;border: 4px;padding: 30px 20px;}#png-ti{font-weight: bold;margin: 0 0 20px;}#png-se{width: 100%;outline: 0px;border: 1px solid #ccc;padding: 5px 10px;margin-bottom: 10px;border-radius: 4px;}#png-cl,#png-ru{padding: 5px 20px;min-width: 80px;border: 1px solid #c6c6c6;margin-right: 10px;}#pngResult th, #pngResult td{border: solid 1px black;padding: 2px 5px;margin:0;width: 200px;}#pngResult tr.ti [colspan="2"]{background-color:#4A86E8; margin:0; color:#fff;}#pngResult tr.ti [colspan="4"]{background-color:#4A86E8; margin:0;}#pngResult tr.co th{background-color:#C9DAF8;}#pngResult table{margin-top: 10px; text-align:center;border-collapse: collapse;}</style><div id="png"><div id="png-wr"><div id="png-ma"><p id="png-ti">Đổi tiêu đề ở đây</p><select id="png-se"></select><button id="png-cl">Close</button><button id="png-ru">Run</button></div></div></div>');
-
-	for (var i = 0; i < versionArr.length; i++) {
-		$("#png-se").append('<option>'+versionArr[i]+'</option>');
+	}else{
+		$("#png").fadeIn();
 	}
-
-	$("#png").fadeIn();
-
-	$("#png-cl").click(function(){
-		$("#png").fadeOut();
-	});
-
-	$("#png-ru").click(function(){
-		hdProcessBugBase($("#png-se").val());
-		$("#png").fadeOut();
-	});
-
-}else{
-	$("#png").fadeIn();
 }
-
 
 
 //Results
@@ -273,4 +273,3 @@ function hdProcessBugBase(vs){
 		+'</tr>';
 	$('#filtersPanel').append('<div id="pngResult" ><table>'+htmlTotal1+htmlRow1+htmlRow2+htmlRow3+htmlTotal2+htmlRow4+htmlRow5+htmlRow6+'</table></div>');
 };
-
