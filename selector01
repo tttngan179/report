@@ -1,0 +1,709 @@
+var versionCol,creDateCol,statusCol,resultCol,severityCol,idCol,bugTitleCol,devStatusCol;
+var formrp, nametest, emailtest, namelead, emaillead, namepm, emailpm, maillist;
+
+var bgA = '#000000';
+var clA = '#ffffff';
+var bgB = '#dd0000';
+var clB = '#ffffff';
+var bgC = '#ff6347';
+var clC = '#000000';
+var bgD = '#ff8c00';
+var clD = '#000000';
+
+function runPNG (){
+	versionCol=creDateCol=statusCol=resultCol=severityCol=idCol=bugTitleCol=devStatusCol = -1;
+
+	formrp = getCookie('formrp');
+	nametest = getCookie('nametest');
+	emailtest = getCookie('emailtest');
+	namelead = getCookie('namelead');
+	emaillead = getCookie('emaillead');
+	namepm = getCookie('namepm');
+	emailpm = getCookie('emailpm');
+	maillist = getCookie('maillist');
+
+	$(".dataTables_scrollHead table thead tr th").each(function(index, el) {
+		if($(el).text().trim().toLowerCase() == 'version'){
+			versionCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'creation date'){
+			creDateCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'status'){
+			statusCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'result'){
+			resultCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'severity'){
+			severityCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'id'){
+			idCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'bug title'){
+			bugTitleCol = index;
+		}
+		if($(el).text().trim().toLowerCase() == 'development status'){
+			devStatusCol = index;
+		}
+	});
+
+	var versionArr = Array();
+	$("#filter-results-table tbody tr td:nth-child("+(versionCol+1)+")").each(function(index, el) {
+		var v = $(el).text();
+
+		if(versionArr.indexOf(v) == -1){
+			versionArr.push(v);
+		}	
+	});
+	versionArr.sort().reverse();
+
+	if( $("#png").length <= 0 ){
+
+		$("body").append('<style type="text/css">#png{font-family: arial,sans-serif;position: fixed;width: 100%;height: 100vh;z-index: 9999999;left: 0;top: 0;display: none;}#png *{box-sizing: border-box;}#png-wr{display: flex;width: 100%;height: 100vh;background: rgba(0, 0, 0, 0.6);overflow: auto; padding: 25px 0px;}#png-ma{width: 90%;max-width: 600px;background: #fff;margin: auto;border: 4px;padding: 30px 20px;}#png-ti{font-weight: bold;margin: 0 0 20px;background: #C9DAF8; padding: 8px 12px;}#png-se, .png-form>select, .png-form>input, .png-form>textarea{width: 100%;outline: 0px;border: 1px solid #ccc;padding: 5px 10px;margin-bottom: 10px;border-radius: 2px;}.png-form>label{display: inline-block;font-size: 13px;margin-bottom: 5px;padding-right: 10px;width: 103px;font-weight: bold; overflow: hidden; white-space: nowrap; vertical-align: text-top; text-overflow: ellipsis;}.png-form.fl>input,.png-form.fl>select{display: inline-block;width: calc(100% - 105px);}.png-form.w5{width: 50%;float: left;}.png-form.w5:last-child{padding-left: 20px;}.png-form.fl.w5:last-child>label{width: 48px;}.png-form.fl.w5:last-child>input{width: calc(100% - 50px);}#png-se label{display: inline-block;width: 20%;min-width: 100px;font-size: 15px;margin-bottom: 3px;cursor: pointer;}#png-se label input[type="checkbox"]{display: none;}#png-se label input[type="checkbox"] + .ckb{width: 11px; height: 12px; display: inline-block; border-radius: 1px; background-color: #C9DAF8; vertical-align: 4px; margin-right: 3px;}#png-se label input[type="checkbox"] + .ckb::before{content: ""; display: inline-block; width: 6.5px; height: 3px; border: solid #000; border-width: 0px 0px 1px 1px; transform: rotate(-45deg); margin-left: 2px; margin-top: 3px; opacity: 0; transition: all .15s ease;}#png-se label input[type="checkbox"]:checked + .ckb::before{opacity: 1;}#png-cl,#png-ru,#png-ex{padding: 5px 20px;min-width: 80px;border: 1px solid #c6c6c6;margin-right: 10px;cursor: pointer;background: #C9DAF8;font-weight: bold;}#ml{resize: none;height: 100px;}</style><div id="png"><div id="png-wr"><div id="png-ma"><p id="png-ti">Instant Report</p><div class="png-form fl"><label for="png-form">Form Report</label><select id="png-form"><option value="window">[Window]Report</option><option value="antihacking">[Anti-Hacking]Report</option><option value="hdhephtml5">[HD+_HEP][HTML5]Report</option><option value="hdhep">[HD+_HEP]Report</option><option value="hep2d">[HEP 2D]Report</option><option value="html5">[HTML5]Report</option><option value="qapm">[QAPM]Report</option></select></div><div><div class="png-form fl w5"><label for="ntest">Tester</label><input id="ntest" type="text"></div><div class="png-form fl w5"><label for="etest">Email</label><input id="etest" type="text"></div></div><div><div class="png-form fl w5"><label for="nlead">QA Lead</label><input id="nlead" type="text"></div><div class="png-form fl w5"><label for="elead">Email</label><input id="elead" type="text"></div></div><div><div class="png-form fl w5"><label for="npm">QA PM</label><input id="npm" type="text"></div><div class="png-form fl w5"><label for="epm">Email</label><input id="epm" type="text"></div></div><div class="png-form"><label for="ml">Mailing List</label><textarea id="ml"></textarea></div><div class="png-form"><label>Version List</label><div id="png-se"></div></div><button id="png-ru">Run</button><button id="png-ex">Export</button><button id="png-cl">Close</button></div></div></div>');
+
+
+		$("#png-cl").click(function(){
+			$("#png").fadeOut();
+		});
+
+		$("#png-ru").click(function(){
+			
+			hdProcessBugBase(runForm(), 0);
+		});
+
+		$("#png-ex").click(function(){
+	
+			hdProcessBugBase(runForm(), $("#png-form").val());
+			
+		});
+
+		$("#png-form").change(function(event) {
+			var formTemp = $(this).val();
+
+			if( formTemp == 'antihacking' ){
+				$("#png .png-form label[for='npm']").text('Local Prod');
+			}else{
+				$("#png .png-form label[for='npm']").text('QA PM');	
+			}
+		});
+
+	}
+
+	$("#png-se").empty();
+	for (var i = 0; i < versionArr.length; i++) {
+		$("#png-se").append('<label><input type="checkbox" value="'+versionArr[i]+'" /><span class="ckb"></span>'+versionArr[i]+'</label>');
+	}
+
+	$("#png-form").val(formrp).trigger('change');
+	$("#ntest").val(nametest);
+	$("#etest").val(emailtest);
+	$("#nlead").val(namelead);
+	$("#elead").val(emaillead);
+	$("#npm").val(namepm);
+	$("#epm").val(emailpm);
+	$("#ml").val(maillist);
+
+
+	$("#png").fadeIn();
+}
+
+function runForm(){
+	var arrVS = Array();
+	$("#png-se input[type='checkbox']:checked").each(function(index, el) {
+		arrVS.push($(el).val());
+	});
+	$("#png").fadeOut();
+	return arrVS;
+}
+
+
+//Results
+function hdProcessBugBase(vs, ex){
+	formrp = $("#png-form").val();
+	nametest = $("#ntest").val();
+	emailtest = $("#etest").val();
+	namelead = $("#nlead").val();
+	emaillead = $("#elead").val();
+	namepm = $("#npm").val();
+	emailpm = $("#epm").val();
+	maillist = $("#ml").val();
+
+	setCookie('formrp',formrp,43800);
+	setCookie('nametest',nametest,43800);
+	setCookie('emailtest',emailtest,43800);
+	setCookie('namelead',namelead,43800);
+	setCookie('emaillead',emaillead,43800);
+	setCookie('namepm',namepm,43800);
+	setCookie('emailpm',emailpm,43800);
+	setCookie('maillist',maillist,43800);
+
+	var rday = "";
+	var arrCnt = Array(); // ID Version Severity Bug Title Status Result
+	// Quantity of bugs
+
+	arrCnt['TotalBug'] = 0; // Status != 'Confirmed', 'Closed', 'CC Confirmed', 'HQ Confirmed', 'Double Confirmed'
+
+	arrCnt['Unresolved'] = 0; // Result = 'Unresolved' & Status != 'Confirmed', 'Closed', 'CC Confirmed', 'HQ Confirmed', 'Double Confirmed'
+	//Issues found this version:
+	arrCnt['ThisVersion'] = 0; // Version = vs
+	//Issues found today:
+	arrCnt['FoundToday'] = 0; // Creation Date = 'date()'
+
+	// Critical issues remaining:
+	arrCnt['Critical'] = 0;
+	
+	// Critical issues found today: 
+	arrCnt['CriticalFoundToday'] = 0;
+	arrCnt['UndoFoundToday'] = 0; // today & Severity = 'A - Tests Undoable' 
+	arrCnt['CrashFoundToday'] = 0; // today & Severity = 'B - Crash'
+	arrCnt['EssentialFoundToday'] = 0; // today & Severity = 'C - Essential Req.'
+	arrCnt['MajorFoundToday'] = 0; // today & Severity = 'D - Major'
+	
+	// Total Critical issues unresolved:
+	arrCnt['CriticalUnresolved'] = 0;
+	arrCnt['UndoUnresolved'] = 0;  // Result = 'Unresolved' & Severity = 'A - Tests Undoable' 
+	arrCnt['CrashUnresolved'] = 0; // Result = 'Unresolved' & Severity = 'B - Crash'
+	arrCnt['EssentialUnresolved'] = 0; // Result = 'Unresolved' & Severity = 'C - Essential Req.'
+	arrCnt['MajorUnresolved'] = 0;  // Result = 'Unresolved' & Severity = 'D - Major'
+
+	//Total To Confirm by QA:
+	arrCnt['ToConfirm'] = 0; // Status = 'To Confirm'
+	//Need Confirmation by HQ:
+	arrCnt['NeedConfirmation'] = 0; // Status = 'Needs HQ Confirmation', 'Needs Confirmation'
+	//Cannot Test issues:
+	arrCnt['CannotTest'] = 0; // Status = 'Cannot Test'
+	//To Confirm by QA - Fixed :
+	arrCnt['ToConfirm_Fixed'] = 0; // Status = 'To Confirm' & Result = 'Fixed'
+	//To Confirm by QA - TFU/TFWW :
+	arrCnt['ToConfirm_TFU'] = 0; // Status = 'To Confirm' & Result = 'To Fix in Update', 'To Fix for WW launch'
+	//To Confirm by QA - WNF/NAB/TP/CNR/DUP/NA:
+	arrCnt['ToConfirm_Remain'] = 0; // Status = 'To Confirm' & Result = 'Will not fix','Not a bug','Third Party','Could not Reproduce','Duplicate','Not Applicable'
+
+	arrCnt['New'] = 0; // Result = 'Unresolved' & Status = 'New'
+	arrCnt['Pending'] = 0; // Result = 'Unresolved' & Status = 'Pending'
+	// Reopen found this version:
+	arrCnt['Open'] = 0; // Result = 'Unresolved' & Status = 'Open'
+
+	arrCnt['Confirmed'] = 0; // Status = 'Confirmed'
+	arrCnt['Closed'] = 0; // Status = 'Closed'
+	arrCnt['CCConfirmed'] = 0; // Status = 'CC Confirmed'
+	arrCnt['HQConfirmed'] = 0; // Status = 'HQ Confirmed'
+	arrCnt['DoubleConfirmed'] = 0; // Status = 'Double Confirmed'
+
+	// Development status
+	arrCnt['DevStatus'] = 0;
+
+	// Important comment
+	var arrCmt = Array();
+
+	// Project Name in QADB
+	var arrPrj = Array();
+
+	$("#filterList>a").each(function(index, el) {
+		if( $(el).text().trim().toLowerCase().indexOf('project is equal to') == 0 ){
+			arrPrj.push({
+				href: $(el).attr('href'),
+				text: $(el).children('strong').text()
+			});
+		}
+	});
+
+	var dObj = new Date();
+	var day = dObj.getDate(); day = (day < 10) ? ('0' + day) : day;
+	var mon = dObj.getMonth() + 1; mon = (mon < 10) ? ('0' + mon) : mon;
+	var year = dObj.getFullYear();
+	var date = year + '-' + mon + '-' + day;
+	var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+	rday = day + "-" + months[dObj.getMonth()] + "-" + (year%100);
+
+	$("#filter-results-table tbody tr").each(function(index, el) {
+		var chkVS = (vs.indexOf($(el).find("td:nth-child("+(versionCol+1)+")").text()) != -1)?1:0;
+		var chkDate = ($(el).find("td:nth-child("+(creDateCol+1)+")").text().indexOf(date) != -1)?1:0;
+
+		var versionVal = $(el).find("td:nth-child("+(versionCol+1)+")").text().trim().toLowerCase();
+		var statusVal = $(el).find("td:nth-child("+(statusCol+1)+")").text().trim().toLowerCase();
+		var resultVal = $(el).find("td:nth-child("+(resultCol+1)+")").text().trim().toLowerCase();
+		var severityVal = $(el).find("td:nth-child("+(severityCol+1)+")").text().trim().toLowerCase();
+		var idVal = $(el).find("td:nth-child("+(idCol+1)+")").text().trim().toLowerCase();
+		var bugTitleVal = $(el).find("td:nth-child("+(bugTitleCol+1)+")").text().trim().toLowerCase();
+		var devStatusVal = $(el).find("td:nth-child("+(devStatusCol+1)+")").text().trim().toLowerCase();
+
+		// Check
+		var arrNotBug = ['confirmed', 'closed', 'cc confirmed', 'hq confirmed', 'double confirmed'];
+
+		if( arrNotBug.indexOf(statusVal) == -1 && statusCol != -1 ){
+			arrCnt['TotalBug']++; // Status != 'Confirmed', 'Closed', 'CC Confirmed', 'HQ Confirmed', 'Double Confirmed'
+
+			if(resultVal == "unresolved"  && resultCol != -1){
+				arrCnt['Unresolved']++; // Result = 'Unresolved' & Status != 'Confirmed', 'Closed', 'CC Confirmed', 'HQ Confirmed', 'Double Confirmed'
+			}
+
+			var n = 0;
+			while (n <= 4) {
+				if(arrCmt[n] == undefined || arrCmt[n].se.trim().toLowerCase().charCodeAt(0) > severityVal.trim().toLowerCase().charCodeAt(0) ){
+					
+					for (var i = 4; i > n; i--) {
+						if(arrCmt[i-1] != undefined){
+							arrCmt[i] = arrCmt[i-1];
+						}
+					}
+					arrCmt[n] = {
+						id:$(el).find("td:nth-child("+(idCol+1)+")").text(),
+						ve:$(el).find("td:nth-child("+(versionCol+1)+")").text(),
+						se:$(el).find("td:nth-child("+(severityCol+1)+")").text(),
+						bu:$(el).find("td:nth-child("+(bugTitleCol+1)+")").text(),
+						st:$(el).find("td:nth-child("+(statusCol+1)+")").text(),
+						re:$(el).find("td:nth-child("+(resultCol+1)+")").text()
+					};
+					break;
+				}
+				n++;
+			}
+		}
+
+		if( chkVS  && versionCol != -1 ){
+			arrCnt['ThisVersion']++; // Version = vs
+		}
+
+		var arrSeverity = ['a - tests undoable', 'b - crash', 'c - essential req.', 'd - major'];
+
+		if( arrSeverity.indexOf(severityVal) != -1 && severityCol != -1 ){
+			arrCnt['Critical']++;
+		}
+
+		if( chkDate && creDateCol != -1 ){
+			arrCnt['FoundToday']++; // Creation Date = 'date()'
+
+			if( arrSeverity.indexOf(severityVal) != -1  && severityCol != -1 ){
+				arrCnt['CriticalFoundToday']++;
+
+				if( severityVal == arrSeverity[0] && severityCol != -1 ){arrCnt['UndoFoundToday']++;}// today & Severity = 'A - Tests Undoable' 
+				if( severityVal == arrSeverity[1] && severityCol != -1 ){arrCnt['CrashFoundToday']++;}// today & Severity = 'B - Crash'
+				if( severityVal == arrSeverity[2] && severityCol != -1 ){arrCnt['EssentialFoundToday']++;}// today & Severity = 'C - Essential Req.'
+				if( severityVal == arrSeverity[3] && severityCol != -1 ){arrCnt['MajorFoundToday']++;}// today & Severity = 'D - Major'
+			}
+		}
+		if( resultVal == "unresolved" && resultCol != -1 ){
+
+			if( arrSeverity.indexOf(severityVal) != -1  && severityCol != -1 ){
+				arrCnt['CriticalUnresolved']++;
+
+				if( severityVal == arrSeverity[0] && severityCol != -1 ){arrCnt['UndoUnresolved']++;}// Result = 'Unresolved' & Severity = 'A - Tests Undoable' 
+				if( severityVal == arrSeverity[1] && severityCol != -1 ){arrCnt['CrashUnresolved']++;}// Result = 'Unresolved' & Severity = 'B - Crash'
+				if( severityVal == arrSeverity[2] && severityCol != -1 ){arrCnt['EssentialUnresolved']++;}// Result = 'Unresolved' & Severity = 'C - Essential Req.'
+				if( severityVal == arrSeverity[3] && severityCol != -1 ){arrCnt['MajorUnresolved']++;}// Result = 'Unresolved' & Severity = 'D - Major'
+			}
+		}
+
+		if( statusVal == "to confirm" && statusCol != -1 ){arrCnt['ToConfirm']++;} // Status = 'To Confirm'
+		if( (statusVal == "needs hq confirmation" || statusVal == "needs confirmation")  && statusCol != -1 ){arrCnt['NeedConfirmation']++;} // Status = 'Needs HQ Confirmation', 'Needs Confirmation'
+		if( statusVal == "cannot test" && statusCol != -1 ){arrCnt['CannotTest']++;} // Status = 'Cannot Test'
+
+		if( statusVal == "to confirm" && statusCol != -1 && resultVal == "fixed" && resultCol != -1 ){arrCnt['ToConfirm_Fixed']++;} // Status = 'To Confirm'
+		if( statusVal == "to confirm" && statusCol != -1 && (resultVal == "to fix for ww launch"||resultVal == "to fix in update") && resultCol != -1 ){arrCnt['ToConfirm_TFU']++;} // Status = 'To Confirm' & Result = 'To Fix in Update', 'To Fix for WW launch'
+
+		var arrRemain = ['will not fix','not a bug','third party','could not reproduce','duplicate','not applicable'];
+		if( statusVal == "to confirm" && statusCol != -1 && arrRemain.indexOf(resultVal) != -1  && resultCol != -1 ){arrCnt['ToConfirm_Remain']++;} // Status = 'To Confirm' & Result = 'Will not fix','Not a bug','Third Party','Could not Reproduce','Duplicate','Not Applicable'
+
+		
+		if( statusVal == "new" && statusCol != -1 && resultVal == "unresolved" && resultCol != -1 ){arrCnt['New']++;} // Result = 'Unresolved' & Status = 'New'
+		if( statusVal == "pending" && statusCol != -1 && resultVal == "unresolved" && resultCol != -1 ){arrCnt['Pending']++;} // Result = 'Unresolved' & Status = 'Pending'
+		if( statusVal.indexOf("open") == 0 && statusCol != -1 && resultVal == "unresolved" && resultCol != -1 ){arrCnt['Open']++;} // Result = 'Unresolved' & Status = 'Open'
+
+		if( statusVal == "confirmed" && statusCol != -1 ){arrCnt['Confirmed']++;} // Status = 'Confirmed'
+		if( statusVal == "closed" && statusCol != -1 ){arrCnt['Closed']++;} // Status = 'Closed'
+		if( statusVal == "cc confirmed" && statusCol != -1 ){arrCnt['CCConfirmed']++;} // Status = 'CC Confirmed'
+		if( statusVal == "hq confirmed" && statusCol != -1 ){arrCnt['HQConfirmed']++;} // Status = 'HQ Confirmed'
+		if( statusVal == "double confirmed" && statusCol != -1 ){arrCnt['DoubleConfirmed']++;} // Status = 'Double Confirmed'
+
+		if( devStatusVal != "same as creation" && devStatusCol != -1 ){arrCnt['DevStatus']++;} // Development status != 'same as creation'
+
+	});
+
+	$("#pngResult").remove();
+
+	if(ex == "window"){
+		exportFWindow(rday,arrCmt,arrPrj,arrCnt);
+	}else if(ex == "antihacking"){
+		exportAntihacking(arrCnt);
+	}else if(ex == "hdhephtml5"){
+		alert('No support');
+	}else if(ex == "hdhep"){
+		alert('No support');
+	}else if(ex == "hep2d"){
+		alert('No support');
+	}else if(ex == "html5"){
+		alert('No support');
+	}else{
+		exportView(arrCnt);
+	}
+
+}
+
+function fnExcelReport(data){
+
+	var dObj = new Date();
+
+	nday = dObj.getFullYear() + "_" + (dObj.getMonth()+1) + "_" + dObj.getDate() + "_" + dObj.getHours() + "_" + dObj.getMinutes() + "_" + dObj.getSeconds();
+
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+
+    var name = 'DailyReport_'+nday+'.xls';
+
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+    {
+        txtArea1.document.open("txt/html","replace");
+        txtArea1.document.write(data);
+        txtArea1.document.close();
+        txtArea1.focus(); 
+        sa=txtArea1.document.execCommand("SaveAs",true,name);
+
+        return (sa);
+    }  
+    else{                 //other browser not tested on IE 11
+        // sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(data));
+
+        var a = document.createElement('a');
+        //getting data from our div that contains the HTML table
+        var data_type = 'data:application/vnd.ms-excel';
+        a.href = data_type + ', ' + encodeURIComponent(data);
+        //setting the file name
+        a.download = name;
+        //triggering the function
+        a.click();
+    }
+
+}
+
+function setCookie(name,value,hours) {
+	var expires = "";
+	if (hours) {
+		var date = new Date();
+		date.setTime(date.getTime() + (hours*60*60*1000));
+		expires = "; expires=" + date.toUTCString();
+	}
+	document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return "";
+}
+
+function exportView(arrCnt){
+	
+	var stl = 'style="border: solid #000000;border-width: 1px 0 0 1px;vertical-align:middle; padding: 0px 5px"';
+	var ali = 'align="center"';
+	var alir = 'align="right"';
+	var bg1 = 'bgcolor="#4A86E8"';
+	var bg2 = 'bgcolor="#C9DAF8"';
+	var cs2 = 'colspan="2"';
+	
+	var tb = '<table id="pngResult" style="border: solid #000000; border-width: 2px 1px 1px 2px;font-family: Calibri;font-size: 14px;" cellspacing="0" border="0"><tbody>';
+
+	tb += '<colgroup width="260"></colgroup><colgroup width="155"></colgroup><colgroup width="129"></colgroup><colgroup width="229"></colgroup><colgroup width="125"></colgroup><colgroup width="170"></colgroup>';
+
+	
+	tb += '<tr>'; //8
+	tb += '<td '+stl+' colspan="3" height="23" '+ali+' '+bg1+'"><b><font size="3" color="#FFFFFF">Total issues remaining:</font></b></td>';
+	tb += '<td '+stl+' colspan="3" height="23" '+ali+' '+bg1+'"><b><font size="3" color="#FFFFFF">'+arrCnt['TotalBug']+'</b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //9
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Critical issues found today:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+' ><i>'+arrCnt['CriticalFoundToday']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Issues found this version:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ThisVersion']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //10
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Total Critical issues unresolved:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['CriticalUnresolved']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Issues found today:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+' ><i>'+arrCnt['FoundToday']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //11
+	tb += '<td '+stl+' height="25" '+alir+' '+bg2+'><b><font size="4">Total unresolved:</font></b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['Unresolved']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Reopen found this version:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+' ><i>'+arrCnt['Open']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //12
+	tb += '<td '+stl+' colspan="3" height="23" '+ali+' '+bg1+'"><b><font size="3" color="#FFFFFF">Critical issues remaining:</font></b></td>';
+	tb += '<td '+stl+' colspan="3" height="23" '+ali+' '+bg1+'"><b><font size="3" color="#FFFFFF">'+arrCnt['Critical']+'</font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //13
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Total To Confirm by QA:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>To Confirm by QA - Fixed:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm_Fixed']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //14
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Need Confirmation by HQ:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['NeedConfirmation']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>To Confirm by QA - TFU/TFWW:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm_TFU']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //15
+	tb += '<td '+stl+' height="40" '+alir+' '+bg2+'><b>Cannot Test issues:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['CannotTest']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>To Confirm by QA - WNF/NAB/TP/CNR/DUP/NA:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm_Remain']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //16
+	tb += '<td '+stl+' colspan="3" height="23" '+ali+' '+bg1+'"><b><font size="3" color="#FFFFFF">Android specific:</font></b></td>';
+	tb += '<td '+stl+' colspan="3" height="23" '+ali+' '+bg1+'"><b><font size="3" color="#FFFFFF">'+arrCnt['DevStatus']+'</font></b></td>';
+	tb += '</tr>';
+
+	tb += '</tbody></table>';
+	
+	var data = tb;
+
+	$('#filtersPanel').append(data);
+
+	$('html, body').animate({
+        scrollTop: $("#pngResult").offset().top - 50
+    }, 500);
+
+}
+
+function exportFWindow(rday,arrCmt,arrPrj,arrCnt){
+	
+	var stl = 'style="border: solid #000000;border-width: thin 0 0 thin;vertical-align:middle"';
+	var ali = 'align="center"';
+	var alir = 'align="right"';
+	var bg1 = 'bgcolor="#4A86E8"';
+	var bg2 = 'bgcolor="#C9DAF8"';
+	var cs2 = 'colspan="2"';
+	
+	var tb = '<table id="pngResult" style="border: solid #000000; border-width: thin 1px 1px thin;font-family: Calibri;font-size: 14px;" cellspacing="0" border="0"><tbody>';
+	var stCl = 'style="border: 0;height:0"';
+	tb += '<tr><td '+stCl+' width="260"></td><td '+stCl+' width="155"></td><td '+stCl+' width="129"></td><td '+stCl+' width="229"></td><td '+stCl+' width="125"></td><td '+stCl+' width="170"></td></tr>';
+
+
+	tb += '<tr>'; //1
+	tb += '<td '+stl+' colspan="4" '+ali+' '+bg1+'"><b><font size="4"></font></b></td>';
+	tb += '<td '+stl+' '+cs2+' rowspan="2" '+ali+' '+bg1+'"><b><font size="4">'+rday+'</font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //2
+	tb += '<td '+stl+' colspan="4" height="66" '+ali+' '+bg1+'"></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //3
+	tb += '<td '+stl+' rowspan="2" height="40" '+alir+' '+bg2+'><b>Tests finished? </b></td>';
+	tb += '<td '+stl+' '+cs2+' rowspan="2" '+ali+'><b><font size="4"></font></b></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>% of test remaining: </b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><b><font color="#000000"></font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //4
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>ETA for tests: </b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><b><font color="#6AA84F"></font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //5
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Total time of test</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><b><font color="#000000"></font></b></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Time in test today</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><b><font color="#000000"></font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //6
+	tb += '<td '+stl+' colspan="6" height="26" '+ali+' '+bg1+'"><b><font size="3">On Track for ETA current  version? YES</font></b></td>';
+	tb += '</tr>';
+
+	var tbCmt = '<table style="border: solid #000000; border-width: 1px 2px 2px 1px;" cellspacing="0" border="0"><tbody>';
+	var stlCmt = 'border: solid #000000;border-width: thin 0 0 thin;vertical-align:middle; padding: 0px 5px;';
+	tbCmt += '<tr>'; //ID Version Severity Bug Title Status Result
+	tbCmt += '<td style="'+stlCmt+'" '+ali+' bgcolor="#CFE2F3"><b>ID</b></td>';
+	tbCmt += '<td style="'+stlCmt+'" '+ali+' bgcolor="#CFE2F3"><b>Version</b></td>';
+	tbCmt += '<td style="'+stlCmt+'" '+ali+' bgcolor="#CFE2F3"><b>Severity</b></td>';
+	tbCmt += '<td style="'+stlCmt+'" '+ali+' bgcolor="#CFE2F3"><b>Bug Title</b></td>';
+	tbCmt += '<td style="'+stlCmt+'" '+ali+' bgcolor="#CFE2F3"><b>Status</b></td>';
+	tbCmt += '<td style="'+stlCmt+'" '+ali+' bgcolor="#CFE2F3"><b>Result</b></td>';
+	tbCmt += '</tr>';
+	for (var i = 0; i < arrCmt.length; i++) {
+		var bgM = bgA;
+		var clM = clA;
+		if(arrCmt[i].se.indexOf('B') == 0){
+			bgM = bgB;
+			clM = clB;
+		}else if(arrCmt[i].se.indexOf('C') == 0){
+			bgM = bgC;
+			clM = clC;
+		}else if(arrCmt[i].se.indexOf('D') == 0){
+			bgM = bgD;
+			clM = clD;
+		}
+		tbCmt += '<tr>'; 
+		tbCmt += '<td style="'+stlCmt+' color:'+clM+'" align="left" valign="middle" bgcolor="'+bgM+'">'+arrCmt[i].id+'</td>';
+		tbCmt += '<td style="'+stlCmt+' color:'+clM+'" align="left" valign="middle" bgcolor="'+bgM+'">'+arrCmt[i].ve+'</td>';
+		tbCmt += '<td style="'+stlCmt+' color:'+clM+'" align="left" valign="middle" bgcolor="'+bgM+'">'+arrCmt[i].se+'</td>';
+		tbCmt += '<td style="'+stlCmt+' color:'+clM+'" align="left" valign="middle" bgcolor="'+bgM+'">'+arrCmt[i].bu+'</td>';
+		tbCmt += '<td style="'+stlCmt+' color:'+clM+'" align="left" valign="middle" bgcolor="'+bgM+'">'+arrCmt[i].st+'</td>';
+		tbCmt += '<td style="'+stlCmt+' color:'+clM+'" align="left" valign="middle" bgcolor="'+bgM+'">'+arrCmt[i].re+'</td>';
+		tbCmt += '</tr>';
+	}
+	tbCmt += '</tbody></table>';
+
+	tb += '<tr>'; //7
+	tb += '<td '+stl+' '+alir+' bgcolor="#CFE2F3"><b>Important comments: </b></td>';
+	tb += '<td '+stl+' colspan="5" align="left" valign="middle">'+tbCmt+'</td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //8
+	tb += '<td '+stl+' colspan="6" height="23" '+ali+' '+bg1+'"><b><font size="3"><br></font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //9
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Critical issues found today:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+' ><i>'+arrCnt['CriticalFoundToday']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Issues found this version:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ThisVersion']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //10
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Total Critical issues unresolved:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['CriticalUnresolved']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Issues found today:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+' ><i>'+arrCnt['FoundToday']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //11
+	tb += '<td '+stl+' height="25" '+alir+' '+bg2+'><b><font size="4">Total unresolved:</font></b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['Unresolved']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>Reopen found this version:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+' ><i>'+arrCnt['Open']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //12
+	tb += '<td '+stl+' colspan="6" height="23" '+ali+' '+bg1+'"><b><font size="3"><br></font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //13
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Total To Confirm by QA:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>To Confirm by QA - Fixed:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm_Fixed']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //14
+	tb += '<td '+stl+' height="20" '+alir+' '+bg2+'><b>Need Confirmation by HQ:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['NeedConfirmation']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>To Confirm by QA - TFU/TFWW:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm_TFU']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //15
+	tb += '<td '+stl+' height="40" '+alir+' '+bg2+'><b>Cannot Test issues:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['CannotTest']+'</i></td>';
+	tb += '<td '+stl+' '+alir+' '+bg2+'><b>To Confirm by QA - WNF/NAB/TP/CNR/DUP/NA:</b></td>';
+	tb += '<td '+stl+' '+cs2+' '+ali+'><i>'+arrCnt['ToConfirm_Remain']+'</i></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //16
+	tb += '<td '+stl+' colspan="6" height="20" align="left" valign="middle" '+bg1+'"><font size="3">Test completion:</font></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //17
+	tb += '<td '+stl+' height="20" '+ali+' '+bg2+'><b>Windows Checklist</b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'></td>';
+	tb += '<td '+stl+' '+ali+' bgcolor="#CFE2F3"><b>Gameplay</b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //18
+	tb += '<td '+stl+' height="20" '+ali+' '+bg2+'><b>MSFT Checklist</b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+' bgcolor="#CFE2F3"><b>Compatibillity </b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //19
+	tb += '<td '+stl+' height="20" '+ali+' '+bg2+'><b>Ads </b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+' bgcolor="#CFE2F3"><b>New Content (GE)</b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //20
+	tb += '<td '+stl+' height="20" '+ali+' '+bg2+'><b>SEM Checklist</b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '<td '+stl+' '+ali+'><b></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //21
+	tb += '<td '+stl+' colspan="6" height="23" '+ali+' '+bg1+'"><b><font size="3"><br></font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //22
+	tb += '<td '+stl+' rowspan="'+Math.max(arrPrj.length,1)+'" height="40" '+ali+' '+bg2+'><b> Project Name in QADB</b></td>';
+	if(arrPrj.length > 0){
+		tb += '<td '+stl+' colspan="5" align="left" valign="bottom"><b><i><font color="#000000"><a href=\''+arrPrj[0].href+'\'>'+arrPrj[0].text+'</a></font></i></b></td>';
+
+	}else{
+		tb += '<td '+stl+' colspan="5" align="left" valign="bottom"><b><i><font color="#000000"></font></i></b></td>';
+	}
+	tb += '</tr>';
+
+	if(arrPrj.length > 0){
+		for (var i = 1; i < arrPrj.length; i++) {
+			tb += '<tr>'; //23
+			tb += '<td '+stl+' colspan="5" align="left" valign="bottom"><b><i><font color="#000000"><a href=\''+arrPrj[i].href+'\'>'+arrPrj[i].text+'</a></font></i></b></td>';
+			tb += '</tr>';
+		}
+	}	
+
+	tb += '<tr>'; //24
+	tb += '<td '+stl+' height="20" '+ali+' '+bg2+'><b>QA Lead(s):</b></td>';
+	tb += '<td '+stl+' colspan="5" align="left" valign="bottom"><b><font color="#000000">'+namelead+'</font></b></td>';
+	tb += '</tr>';
+
+	tb += '<tr>'; //25
+	tb += '<td '+stl+' height="20" '+ali+' '+bg2+'><b>QA Project Manager(s):</b></td>';
+	tb += '<td '+stl+' colspan="5" align="left" valign="bottom"><b><font color="#000000">'+namepm+'</font></b></td>';
+	tb += '</tr>';
+
+	tb += '</tbody></table>';
+	
+	var data = tb;
+	fnExcelReport(data);
+
+}
+
+function exportAntihacking(arrCnt){
+	var cssb = 'border: solid #000000;border-width: thin 0 0 thin;vertical-align:middle;';
+	var bgsil = 'background:#c0c0c0;';
+	var bgwhi = 'background:#ffffff;';
+	var cssc = 'text-align:center;';
+
+	var tb = '<table style="width:1051.5pt;border: solid #000000; border-width: thin 1px 1px thin;" width="1402" cellspacing="0" cellpadding="0" border="0"> <tbody> <tr style="height:12.75pt"> <td colspan="4" style="'+cssb+'background:#FFFF99;height:12.75pt;'+cssc+'"> <b></b> </td></tr><tr style="height:45.75pt"> <td colspan="4" style="'+cssb+'background:#FFFF99;height:45.75pt;'+cssc+'"> <b><u></u></b> </td></tr><tr style="height:15.75pt"> <td style="'+cssb+'background:#333333;height:15.75pt;'+cssc+'"> <b><span style="color:white">Types of test</span></b> </td><td style="'+cssb+'background:#333333;height:15.75pt;'+cssc+'"> <b><span style="color:white">Rules</span></b> </td><td style="'+cssb+'background:#333333;height:15.75pt;'+cssc+'"> <b><span style="color:white">Status</span></b> </td><td style="'+cssb+'background:#333333;height:15.75pt;'+cssc+'"> <b><span style="color:white">QA\'s comments</span></b> </td></tr><tr> <td rowspan="13" style="'+cssb+bgsil+cssc+'width:200px;"> Hacking </td><td style="'+cssb+bgsil+'"> 1.0.1: Make sure the application cannot be hacked using the Game CIH Application </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.2: Make sure the application cannot be hacked using the Game Killer Application </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.3: Make sure the application cannot be hacked using the Game Guardian Application </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.4: Make sure the application cannot be hacked using the Freedom Application </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.5: Make sure the application cannot be hacked using the SB Game Hacker Application </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.6: Make sure the application cannot be hacked using xPrivacy and the Freedom Hack </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.7: Make sure the application cannot be hacked using the Lucky Patcher app </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.8: The game must not be hacked using Lucky Patcher – Custom Patches </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.9: Make sure the application cannot be hacked using the GG Assistant hack tool </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+cssc+'"> </td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.10: The game must not be hacked using Xmod Games Tool </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.11: The game must not be hacked using DaX Atk </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.5.2: All important values in game must be encrypted and validated by DEV </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.5.3: If there is any update for the list of important values in game, QA must be informed/ updated </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td rowspan="2" style="'+cssb+bgsil+cssc+'"> Apk offline checking </td><td style="'+cssb+bgsil+'"> 1.0.10.1: The AUT must crash after launching the game for some minutes once REVISION-2408 parameter is modified. </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 1.0.10.1B: The AUT must crash after launching the game for some minutes once the APK is hacked </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr style="height:25.5pt"> <td style="'+cssb+bgsil+'height:25.5pt;'+cssc+'"> Licensing lines in the manifest </td><td style="'+cssb+bgsil+'height:25.5pt"> 1.0.10.2: Licensing lines are present in the manifest </td><td style="'+cssb+bgwhi+'height:25.5pt"><br></td><td style="'+cssb+'height:25.5pt"><br></td></tr><tr> <td rowspan="11" style="'+cssb+bgsil+cssc+'"> Banning </td><td style="'+cssb+bgsil+'"> 2.0.1: The Janus banning system must not be bypassed </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.2: The Live Bantool v3 Configurations must be properly set up </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.3: A question bug must provide a document of official banning message </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.3.1: If the user is caught cheating, he must be totally banned from the game </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.3.2: Every game must implement the possibility to ban cheaters </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.4: Customer Care button must be displayed at the end of the banning message </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.5: “ctg” parameter from Customer Care link must have “BANNED” value </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.6: Banned users must no longer be displayed in the game leaderboards </td><td style="'+cssb+cssc+'"> </td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.7: The AUT must support online banning version block with mandatory update prompt </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.8: Online banning full permission removal must work correctly </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 2.0.9: Servers must not be spammed when the online permissions are removed </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td rowspan="7" style="'+cssb+bgsil+cssc+'"> Save File </td><td style="'+cssb+bgsil+'"> 3.0.0: Games should allow savefiles to be Pulled out of the device </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.1: Save File Transfers on the same device must work </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.2: Save File Transfers on similar devices must not work </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.3: Save File Transfers on different devices must not work </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.4: Save file location </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.5: Save files must be encrypted using TEA </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 3.0.5.1: Make sure the save file is using the dynamic-key to encrypt/ decrypt </td><td style="'+cssb+bgwhi+'"><br></td><td style="'+cssb+'"><br></td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt;'+cssc+'"> Modded APK </td><td style="'+cssb+bgsil+'height:12.75pt"> 4.0.1: Modded APK files on non-rooted devices </td><td style="'+cssb+bgwhi+'height:12.75pt"><br></td><td style="'+cssb+'height:12.75pt"><br></td></tr><tr> <td rowspan="7" style="'+cssb+bgsil+cssc+'"> Anti Piracy + DRM </td><td style="'+cssb+bgsil+'"> 5.1.1: Step 1: Go to the gameloft site </td><td rowspan="8" style="'+cssb+bgwhi+'"><br></td><td rowspan="8" style="'+cssb+'"><br></td></tr><tr> <td style="'+cssb+bgsil+'"> 5.1.2: Step 2: Choose the right platform </td></tr><tr> <td style="'+cssb+bgsil+'"> 5.1.3: Step 3: Add a version if needed </td></tr><tr> <td style="'+cssb+bgsil+'"> 5.1.4: Step 4: Upload the .apk you need </td></tr><tr> <td style="'+cssb+bgsil+'"> 5.1.5.1: For Paymium builds, the Operator must be selected before generating the OTA link </td></tr><tr> <td style="'+cssb+bgsil+'"> 5.1.5.: Step 5: Select the release </td></tr><tr> <td style="'+cssb+bgsil+'"> 5.1.6: The release should be downloaded, installed successfully, and launched properly </td></tr><tr style="height:15.0pt"> <td style="'+cssb+bgsil+'height:15.0pt;'+cssc+'"> DRM GL Shop </td><td style="'+cssb+bgsil+'height:15.0pt"> 5.3.1: Testing Procedure for the native Gameloft DRM check </td></tr><tr style="height:15.0pt"> <td style="'+cssb+bgsil+'height:15.0pt;'+cssc+'"> DRM GGP </td><td style="'+cssb+bgsil+'height:15.0pt"> 5.4.7: Test using a device not associated with a test account </td><td style="'+cssb+'height:15.0pt"><br></td><td style="'+cssb+'height:15.0pt"><br></td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>Remaining bug</b> </td><td colspan="3" style="'+cssb+'height:12.75pt;'+cssc+'"> <b>'+arrCnt['TotalBug']+'</b> </td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>Round in-test</b> </td><td colspan="3" style="'+cssb+'height:12.75pt;'+cssc+'"> <b></b> </td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>Total time of test</b> </td><td colspan="3" style="'+cssb+'height:12.75pt;'+cssc+'"> <b></b> </td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>Test performed by</b> </td><td colspan="3" style="'+cssb+'height:12.75pt"> <b><u><span style="font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;color:#0B6CDA;text-align:left;">'+emailtest+'</span></u></b> </td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>QAPM</b> </td><td colspan="3" style="'+cssb+'height:12.75pt"><br></td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>HQ Prod</b> </td><td colspan="3" style="'+cssb+'height:12.75pt"><br></td></tr><tr style="height:12.75pt"> <td style="'+cssb+bgsil+'height:12.75pt"> <p style="text-align:right" align="right"> <b>Local Prod</b> </td><td colspan="3" style="'+cssb+'height:12.75pt"> <b>'+emailpm+'</b> </td></tr><tr style="height:15.0pt"> <td style="'+cssb+bgsil+'height:15.0pt"> <p style="text-align:right" align="right"> <b>Mailing List</b> </td><td colspan="3" style="'+cssb+'height:15.0pt"> <b><span style="font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;">'+maillist+'</span></b> </td></tr></tbody></table>';
+	var data = tb;
+	fnExcelReport(data);
+}
+
+runPNG();
